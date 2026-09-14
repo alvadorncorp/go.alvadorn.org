@@ -16,15 +16,15 @@ const render = (template, tokens) =>
 const loadModules = () => {
   const entries = JSON.parse(fs.readFileSync(path.join(rootDir, 'modules.json'), 'utf8'));
   if (!Array.isArray(entries) || entries.length === 0) {
-    throw new Error('modules.json: esperado um array com ao menos um modulo');
+    throw new Error('modules.json: expected a non-empty array');
   }
   return entries.map((entry, index) => {
     const { modulePath, repo } = entry;
     if (typeof modulePath !== 'string' || modulePath === '') {
-      throw new Error(`modules.json[${index}]: modulePath ausente`);
+      throw new Error(`modules.json[${index}]: modulePath is missing`);
     }
     if (typeof repo !== 'string' || !repo.startsWith('https://')) {
-      throw new Error(`modules.json[${index}] (${modulePath}): repo precisa ser uma URL https://`);
+      throw new Error(`modules.json[${index}] (${modulePath}): repo must be an https:// URL`);
     }
     return { modulePath, repo: repo.replace(/\/+$/, '') };
   });
