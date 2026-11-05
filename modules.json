@@ -2,5 +2,9 @@
   {
     "modulePath": "pigeon",
     "repo": "https://github.com/alvadorncorp/pigeon-go"
+  },
+  {
+    "modulePath": "gopackages",
+    "repo": "ssh://git@github.com/alvadorncorp/gopackages"
   }
 ]

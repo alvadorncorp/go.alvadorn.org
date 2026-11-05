@@ -23,8 +23,9 @@ const loadModules = () => {
     if (typeof modulePath !== 'string' || modulePath === '') {
       throw new Error(`modules.json[${index}]: modulePath is missing`);
     }
-    if (typeof repo !== 'string' || !repo.startsWith('https://')) {
-      throw new Error(`modules.json[${index}] (${modulePath}): repo must be an https:// URL`);
+    // https:// ou ssh://git@ — privado usa SSH para `go get` clonar com a chave do usuário
+    if (typeof repo !== 'string' || !(repo.startsWith('https://') || repo.startsWith('ssh://git@'))) {
+      throw new Error(`modules.json[${index}] (${modulePath}): repo must be an https:// or ssh://git@ URL`);
     }
     return { modulePath, repo: repo.replace(/\/+$/, '') };
   });
@@ -47,7 +48,7 @@ for (const { modulePath, repo } of modules) {
 
 const modulesList = modules
   .map(({ modulePath, repo }) => {
-    const label = repo.replace(/^https:\/\//, '');
+    const label = repo.replace(/^(https|ssh):\/\//, '').replace(/^git@/, '');
     return `    <li><a href="/${modulePath}/">go.alvadorn.org/${modulePath}</a> &rarr; <a href="${repo}">${label}</a></li>`;
   })
   .join('\n');

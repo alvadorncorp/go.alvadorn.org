@@ -21,7 +21,9 @@ https://github.com/alvadorncorp/pigeon-go
 Edit [`modules.json`](modules.json) and add an entry with:
 
 - `modulePath`: the path after `go.alvadorn.org/`
-- `repo`: the complete HTTPS URL of the Git repository, without `.git` or a trailing slash
+- `repo`: the complete HTTPS URL of the Git repository, without `.git` or a trailing slash.
+  Private modules may use `ssh://git@github.com/owner/repo` so `go get` clones via the
+  user's SSH key.
 
 Example:
 
