@@ -49,13 +49,38 @@ for (const { modulePath, repo } of modules) {
 const modulesList = modules
   .map(({ modulePath, repo }) => {
     const label = repo.replace(/^(https|ssh):\/\//, '').replace(/^git@/, '');
-    return `    <li><a href="/${modulePath}/">go.alvadorn.org/${modulePath}</a> &rarr; <a href="${repo}">${label}</a></li>`;
+    const privateModule = repo.startsWith('ssh://');
+    // rótulo real dentro da célula: acessível e visível no fold mobile
+    const cell = (name, inner) =>
+      `<td><span class="cell-label">${name}</span>${inner}</td>`;
+    const status = privateModule
+      ? cell('Status', '<span class="status private">Private</span>')
+      : cell('Status', '<span class="status public">Public</span>');
+    // módulo privado não vira link: a URL ssh:// não abre em browser
+    const source = privateModule
+      ? cell('Source', `<span>${label}</span>`)
+      : cell('Source', `<a href="${repo}">${label}</a>`);
+    return [
+      `          <tr>`,
+      cell('Module', `<code>go.alvadorn.org/${modulePath}</code>`),
+      status,
+      source,
+      `          </tr>`,
+    ].join('\n');
   })
+  .join('\n');
+
+const registryLine = `${modules.length} module${modules.length === 1 ? '' : 's'} · ${
+  modules.filter(({ repo }) => repo.startsWith('ssh://')).length
+} private · static build`;
+
+const fetchList = modules
+  .map(({ modulePath }) => `      <code class="fetch-line">go get go.alvadorn.org/${modulePath}</code>`)
   .join('\n');
 
 writeFile(
   path.join(distDir, 'index.html'),
-  render(readTemplate('index.tmpl.html'), { modulesList }),
+  render(readTemplate('index.tmpl.html'), { modulesList, registryLine, fetchList }),
 );
 
 fs.copyFileSync(path.join(rootDir, 'CNAME'), path.join(distDir, 'CNAME'));
