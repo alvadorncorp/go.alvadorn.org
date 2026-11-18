@@ -6,5 +6,9 @@
   {
     "modulePath": "gopackages",
     "repo": "ssh://git@github.com/alvadorncorp/gopackages"
+  },
+  {
+    "modulePath": "functional",
+    "repo": "https://github.com/alvadorncorp/functional-go"
   }
 ]
