@@ -10,5 +10,9 @@
   {
     "modulePath": "functional",
     "repo": "https://github.com/alvadorncorp/functional-go"
+  },
+  {
+    "modulePath": "functional/workflow",
+    "repo": "https://github.com/alvadorncorp/functional-go"
   }
 ]
