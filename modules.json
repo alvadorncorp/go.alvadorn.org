@@ -13,6 +13,7 @@
   },
   {
     "modulePath": "functional/workflow",
-    "repo": "https://github.com/alvadorncorp/functional-go"
+    "repo": "https://github.com/alvadorncorp/functional-go",
+    "importRoot": "functional"
   }
 ]

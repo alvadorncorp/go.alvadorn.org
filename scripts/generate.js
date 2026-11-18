@@ -19,7 +19,7 @@ const loadModules = () => {
     throw new Error('modules.json: expected a non-empty array');
   }
   return entries.map((entry, index) => {
-    const { modulePath, repo } = entry;
+    const { modulePath, repo, importRoot } = entry;
     if (typeof modulePath !== 'string' || modulePath === '') {
       throw new Error(`modules.json[${index}]: modulePath is missing`);
     }
@@ -27,7 +27,12 @@ const loadModules = () => {
     if (typeof repo !== 'string' || !(repo.startsWith('https://') || repo.startsWith('ssh://git@'))) {
       throw new Error(`modules.json[${index}] (${modulePath}): repo must be an https:// or ssh://git@ URL`);
     }
-    return { modulePath, repo: repo.replace(/\/+$/, '') };
+    // Módulo aninhado: o go-import deve declarar o prefixo raiz do repo (o módulo raiz),
+    // senão o `go` resolve a tag errada (v1.0.0 na raiz em vez de <dir>/v1.0.0)
+    if (importRoot !== undefined && (typeof importRoot !== 'string' || !modulePath.startsWith(`${importRoot}/`))) {
+      throw new Error(`modules.json[${index}] (${modulePath}): importRoot must be a proper path prefix of modulePath`);
+    }
+    return { modulePath, repo: repo.replace(/\/+$/, ''), importPath: importRoot ?? modulePath };
   });
 };
 
@@ -39,10 +44,10 @@ const writeFile = (filePath, contents) => {
 const modules = loadModules();
 const moduleTemplate = readTemplate('module.tmpl.html');
 
-for (const { modulePath, repo } of modules) {
+for (const { modulePath, repo, importPath } of modules) {
   writeFile(
     path.join(distDir, modulePath, 'index.html'),
-    render(moduleTemplate, { modulePath, repoURL: repo }),
+    render(moduleTemplate, { modulePath, repoURL: repo, importPath }),
   );
 }
 

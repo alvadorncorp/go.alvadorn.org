@@ -24,6 +24,11 @@ Edit [`modules.json`](modules.json) and add an entry with:
 - `repo`: the complete HTTPS URL of the Git repository, without `.git` or a trailing slash.
   Private modules may use `ssh://git@github.com/owner/repo` so `go get` clones via the
   user's SSH key.
+- `importRoot` (optional): for a module that lives in a subdirectory of the repo
+  (a nested module), the module path of the repo root. The `go-import` meta tag must
+  declare this root prefix so `go get` maps versions to `<dir>/vX.Y.Z` tags inside the
+  repo — otherwise it checks out the root-level tag and fails with
+  "module declares its path as ... but was required as ...".
 
 Example:
 
